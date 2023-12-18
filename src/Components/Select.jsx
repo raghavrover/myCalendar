@@ -1,4 +1,4 @@
-const Select = ({ label, id, options, ...props }) => {
+const Select = ({ label, id, options, onMonthChange, ...props }) => {
   return (
     <div className="w-full flex flex-col items-start">
       {label && (
@@ -9,10 +9,11 @@ const Select = ({ label, id, options, ...props }) => {
       <select
         className={"text-black  w-full px-2 py-2 rounded-md"}
         id={id}
+        onChange={(e) => onMonthChange(e.target.value)}
         {...props}
       >
-        {options?.map((element) => (
-          <option key={element} value={element}>
+        {options?.map((element, i) => (
+          <option key={element} value={i}>
             {element}
           </option>
         ))}

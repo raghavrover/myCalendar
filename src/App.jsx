@@ -4,6 +4,7 @@ import Header from "./Components/Header";
 import Calendar from "./Components/Calendar";
 import EventsList from "./Components/EventsList";
 import EventForm from "./Components/EventForm";
+import CalendarContext from "./Context/CalendarContext";
 
 function getDisplayableMonths(date) {
   const year = date.getFullYear(),
@@ -60,13 +61,15 @@ function App() {
   //Store events in the local storage
 
   return (
-    <div className="h-screen">
-      <Header />
-      <main className="w-[92%] h-[calc(100%_-_80px)] max-w-[1440px] mx-auto pt-2 overflow-hidden flex flex-col items-center justify-between md:flex-row md:items-start">
-        <Calendar data={displayableMonths} />
-        <EventsList eventsList={sampleEvents} />
-      </main>
-    </div>
+    <CalendarContext.Provider value={{ currentDate, setCurrentDate }}>
+      <div className="h-screen">
+        <Header />
+        <main className="w-[92%] h-[calc(100%_-_80px)] max-w-[1440px] mx-auto py-2 overflow-hidden flex flex-col items-center justify-between md:flex-row md:items-start">
+          <Calendar data={displayableMonths} />
+          <EventsList eventsList={[]} />
+        </main>
+      </div>
+    </CalendarContext.Provider>
   );
 }
 
