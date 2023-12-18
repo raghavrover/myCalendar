@@ -1,15 +1,15 @@
 const Event = ({ title, startTime, endTime, description }) => {
   return (
     <li className="border p-3 mb-2 rounded-md">
-      <h3 className="text-md font-semibold mb-1">{title}</h3>
-      <p>
-        <strong>Start Time:</strong> {startTime}
+      <h3 className="text-sm font-medium mb-1">{title}</h3>
+      <p className="text-xs">
+        <span className="font-medium">Start Time:</span> {startTime}
       </p>
-      <p>
-        <strong>End Time:</strong> {endTime}
+      <p className="text-xs">
+        <span className="font-medium">End Time:</span> {endTime}
       </p>
-      <p>
-        <strong>Description:</strong> {description}
+      <p className="text-xs">
+        <span className="font-medium">Description:</span> {description}
       </p>
     </li>
   );

@@ -1,73 +1,78 @@
-import { useState } from "react";
-import { addMonths, subMonths } from "date-fns";
+import { useState, useEffect } from "react";
 import Header from "./Components/Header";
 import Calendar from "./Components/Calendar";
 import EventsList from "./Components/EventsList";
 import EventForm from "./Components/EventForm";
 import CalendarContext from "./Context/CalendarContext";
-
-function getDisplayableMonths(date) {
-  const year = date.getFullYear(),
-    month = date.getMonth(); // getMonth() method gives 0-11 month numbers
-  const tempDate = new Date(year, month); // Month argument should be zero indexed(0-11)
-
-  const monthsData = [];
-  // Getting previous six months
-  for (let i = 6; i >= 1; i--) {
-    const currentDate = subMonths(tempDate, i);
-
-    const monthObj = {
-      month: currentDate.getMonth() + 1,
-      year: currentDate.getFullYear(),
-    };
-    monthsData.push(monthObj);
-  }
-
-  // Getting next six months (including current month)
-  for (let i = 0; i <= 6; i++) {
-    const currentDate = addMonths(tempDate, i);
-    const monthObj = {
-      month: currentDate.getMonth() + 1,
-      year: currentDate.getFullYear(),
-    };
-    monthsData.push(monthObj);
-  }
-
-  return monthsData;
-}
+import { getDisplayableMonths } from "./Helpers/getMonths";
+import {
+  EVENTS_STORAGE_KEY,
+  DAYS_IN_WEEK,
+  MONTHS,
+  sampleEvents,
+} from "./Constants";
 
 const todayDate = new Date();
 const displayableMonths = getDisplayableMonths(todayDate); //Months are indexed from 1 (1-12) in this array
 
-const sampleEvents = [
-  {
-    title: "Meeting with Team",
-    startTime: "10:00 AM",
-    endTime: "11:30 AM",
-    description: "Discuss project updates and upcoming tasks.",
-  },
-  {
-    title: "Lunch with Client",
-    startTime: "12:30 PM",
-    endTime: "2:00 PM",
-    description: "Meet with the client to discuss project requirements.",
-  },
-];
-
 function App() {
   const [currentDate, setCurrentDate] = useState(todayDate);
   const [events, setEvents] = useState(sampleEvents);
+  const [isEventFormOpen, setIsEventFormOpen] = useState(false); // Use state to toggle popup visibility
+
+  // Function to handle closing the popup
+  const closeEventForm = () => setIsEventFormOpen(false);
+
+  // Trigger opening the popup when "Add Event" button is clicked
+  const handleAddEventClick = () => setIsEventFormOpen(true);
 
   //Store events in the local storage
+  useEffect(() => {
+    const storedEvents = JSON.parse(localStorage.getItem(EVENTS_STORAGE_KEY));
+    if (storedEvents) setEvents(storedEvents);
+
+    return () => {};
+  }, []);
+
+  const addEvent = (event) => {
+    event.id = Math.random().toString(36).substring(2, 15);
+    setEvents([...events, event]);
+    localStorage.setItem(EVENTS_STORAGE_KEY, JSON.stringify(events));
+  };
+
+  const updateEvent = (updatedEvent) => {
+    const updatedEvents = events.map((event) =>
+      event.id === updatedEvent.id ? updatedEvent : event
+    );
+    setEvents(updatedEvents);
+    localStorage.setItem(EVENTS_STORAGE_KEY, JSON.stringify(updatedEvents));
+  };
+
+  const deleteEvent = (eventId) => {
+    const filteredEvents = events.filter((event) => event.id !== eventId);
+    setEvents(filteredEvents);
+    localStorage.setItem(EVENTS_STORAGE_KEY, JSON.stringify(filteredEvents));
+  };
+
+  const renderEventFormPopUp = () => {
+    if (!isEventFormOpen) return null;
+
+    return (
+      <div className="flex items-center justify-center fixed top-0 left-0 w-full h-full overflow-y-auto bg-gray-900 bg-opacity-75 backdrop-filter md:opacity-100 transition-opacity ease-in-out duration-300">
+        <EventForm close={closeEventForm} add={addEvent} />
+      </div>
+    );
+  };
 
   return (
     <CalendarContext.Provider value={{ currentDate, setCurrentDate }}>
-      <div className="h-screen">
+      <div className="h-screen relative">
         <Header />
-        <main className="w-[92%] h-[calc(100%_-_80px)] max-w-[1440px] mx-auto py-2 overflow-hidden flex flex-col items-center justify-between md:flex-row md:items-start">
-          <Calendar data={displayableMonths} />
-          <EventsList eventsList={[]} />
+        <main className="w-[92%] h-[calc(100%_-_80px)] max-w-[1440px] mx-auto py-2 flex flex-col items-center justify-between md:flex-row md:items-start md:overflow-hidden">
+          <Calendar data={displayableMonths} addForm={handleAddEventClick} />
+          <EventsList eventsList={events} />
         </main>
+        {renderEventFormPopUp()}
       </div>
     </CalendarContext.Provider>
   );

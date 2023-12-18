@@ -1,5 +1,5 @@
 import { startOfMonth, endOfMonth } from "date-fns";
-import { useContext } from "react";
+import { useContext, useRef } from "react";
 import CalendarContext from "../Context/CalendarContext";
 
 const weekDaysList = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -29,6 +29,7 @@ function getDatesArray(start, end) {
 
 function Month({ month, year }) {
   const { currentDate, setCurrentDate } = useContext(CalendarContext);
+  const monthRef = useRef(null);
   const currentDay = currentDate.getDate(),
     currentMonth = currentDate.getMonth() + 1,
     currentYear = currentDate.getFullYear();
@@ -57,7 +58,7 @@ function Month({ month, year }) {
   }
 
   return (
-    <li className="w-full min-w-[300px] my-2">
+    <li className="w-full min-w-[300px] my-2" ref={monthRef}>
       <div className="w-full flex justify-between items-center">
         <p className="text-sm">{monthsList[month - 1]}</p>
         <span className="text-xs">{year}</span>
@@ -97,6 +98,7 @@ function Month({ month, year }) {
                 </div>
               );
             }
+            // Return empty div when element is zero
             return <div className="p-2" key={i}></div>;
           })}
         </li>

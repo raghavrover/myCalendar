@@ -1,11 +1,15 @@
-// components/Calendar/EventForm.js
 import { useState } from "react";
+import { useContext } from "react";
+import CalendarContext from "../Context/CalendarContext";
 import Input from "./Input";
+import Textarea from "./Textarea";
+import Button from "./Button";
 
-const EventForm = ({ onAddEvent }) => {
+const EventForm = ({ close, add }) => {
+  const { currentDate } = useContext(CalendarContext);
   const [title, setTitle] = useState("");
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
+  const [startTime, setStartTime] = useState("09:00");
+  const [endTime, setEndTime] = useState("17:00");
   const [description, setDescription] = useState("");
 
   const handleAddEvent = () => {
@@ -19,9 +23,9 @@ const EventForm = ({ onAddEvent }) => {
         description,
       };
 
-      // Pass the event data to the parent component
-      onAddEvent(eventData);
-
+      // Pass the event data to the parent component and close the form
+      add(eventData);
+      close();
       // Reset form fields after adding an event
       setTitle("");
       setStartTime("");
@@ -33,45 +37,68 @@ const EventForm = ({ onAddEvent }) => {
   };
 
   return (
-    <div className="mt-4">
-      <h2 className="text-lg font-semibold mb-2">Add Event</h2>
+    <div className="w-full m-auto py-5 px-4 max-w-md bg-slate-400 rounded-xl md:py-10 md:px-6">
+      <h2 className="text-lg font-semibold text-white mb-2">
+        Add Event On:
+        {` ${currentDate.getDate()}/${
+          currentDate.getMonth() + 1
+        }/${currentDate.getFullYear()}`}
+      </h2>
       <form onSubmit={handleAddEvent}>
         <Input
           id={"title"}
           type={"text"}
           label={"Title"}
-          value={""}
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
           placeholder={"Add title"}
           required
         />
-        <Input
-          id={"startTime"}
-          type={"time"}
-          label={"Start Time"}
-          value={""}
-          placeholder={""}
-          required
-        />
-        <Input
-          id={"endTime"}
-          type={"time"}
-          label={"End Time"}
-          value={""}
-          placeholder={"Add title"}
-          required
-        />
-        <Input
+
+        {/*Schedule  */}
+        <div className="w-full flex gap-4">
+          <Input
+            id={"startTime"}
+            type={"time"}
+            label={"Start Time"}
+            value={startTime}
+            onChange={(e) => setStartTime(e.target.value)}
+          />
+          <Input
+            id={"endTime"}
+            type={"time"}
+            label={"End Time"}
+            value={endTime}
+            onChange={(e) => setEndTime(e.target.value)}
+          />
+        </div>
+
+        <Textarea
           id={"description"}
           type={"text"}
           label={"Description"}
-          value={""}
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
           placeholder={"Add description"}
           required
         />
 
-        <button className="bg-blue-500 text-white p-2 rounded-md" type="submit">
-          Add Event
-        </button>
+        <div className="w-full flex justify-center gap-4 mt-4">
+          <Button
+            className="bg-gray-500 text-white p-2 rounded-md"
+            type="button"
+            onClick={close}
+          >
+            Close
+          </Button>
+
+          <Button
+            className="bg-blue-500 text-white p-2 rounded-md"
+            type="submit"
+          >
+            Add Event
+          </Button>
+        </div>
       </form>
     </div>
   );
