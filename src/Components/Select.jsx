@@ -7,13 +7,13 @@ const Select = ({ label, id, options, ...props }) => {
         </label>
       )}
       <select
-        className={`${className} text-black  w-full px-2 py-2 rounded-md `}
+        className={"text-black  w-full px-2 py-2 rounded-md"}
         id={id}
         {...props}
       >
         {options?.map((element) => (
-          <option key={element.value} value={element.name}>
-            {element.name}
+          <option key={element} value={element}>
+            {element}
           </option>
         ))}
       </select>

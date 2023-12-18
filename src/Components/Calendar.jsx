@@ -1,25 +1,33 @@
+import Month from "./Month";
 import Select from "./Select";
 
-const months = [
-  { value: 1, name: "January" },
-  { value: 2, name: "February" },
-  { value: 3, name: "March" },
-  { value: 4, name: "April" },
-  { value: 5, name: "May" },
-  { value: 6, name: "June" },
-  { value: 7, name: "July" },
-  { value: 8, name: "August" },
-  { value: 9, name: "September" },
-  { value: 10, name: "October" },
-  { value: 11, name: "November" },
-  { value: 12, name: "December" },
+const DAYS_IN_WEEK = 7;
+const MONTHS = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
 ];
 
-const Calendar = () => {
+const Calendar = ({ data }) => {
   return (
-    <div className="w-full md:w-[50%]">
-      <Select id={"monthDropDown"} options={months} />
+    <div className="w-full h-full min-w-[300px] max-w-sm overflow-y-auto">
+      <Select id={"monthDropDown"} options={MONTHS} />
       {/* Your calendar rendering logic goes here */}
+      {/* Display months vertically in desktop devices and horizontally in mobiles */}
+      <ul className="">
+        {data?.map((obj, i) => (
+          <Month key={i} {...obj} />
+        ))}
+      </ul>
     </div>
   );
 };

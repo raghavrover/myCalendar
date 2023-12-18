@@ -1,3 +1,4 @@
+//Set Input values
 function Input({ id, label, ...props }) {
   return (
     <div className="mb-4">
