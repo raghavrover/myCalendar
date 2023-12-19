@@ -17,8 +17,8 @@ export function getDisplayableMonths(date) {
     monthsData.push(monthObj);
   }
 
-  // Getting next six months (including current month)
-  for (let i = 0; i <= 6; i++) {
+  // Getting next five months along with the current month
+  for (let i = 0; i <= 5; i++) {
     const currentDate = addMonths(tempDate, i);
     const monthObj = {
       month: currentDate.getMonth() + 1,

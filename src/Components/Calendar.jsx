@@ -1,42 +1,38 @@
-import { useContext, useRef, useState } from "react";
+import { useContext, createRef, useState, useEffect } from "react";
 import Month from "./Month";
 import Select from "./Select";
 import CalendarContext from "../Context/CalendarContext";
 import Button from "./Button";
-
-const DAYS_IN_WEEK = 7;
-const MONTHS = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
+import { MONTHS } from "../Constants";
 
 const Calendar = ({ data, addForm }) => {
   const { currentDate } = useContext(CalendarContext);
-  const [currentMonth, setCurrentMonth] = useState(currentDate.getMonth()); //Month is indexed from zero
-  const monthSelectorRef = useRef(null);
+  const [currentMonth, setCurrentMonth] = useState(currentDate.getMonth()); //To hold current month(indexed from zero) on Select dropdown
+
+  // Creating refs to pass each `reference` as value of `ref` attribute of the month Components
+  // Here `refs` is an object which has `references` as values with Month names as keys
+  const refs = MONTHS.reduce((acc, value) => {
+    acc[value] = createRef(null);
+    return acc;
+  }, {});
 
   function handleMonthChange(month) {
     setCurrentMonth(month);
+
     // Scroll to the month selector when changing months
-    monthSelectorRef.current.scrollIntoView({
+    refs[MONTHS[month]].current.scrollIntoView({
       behavior: "smooth",
-      block: "enter",
+      block: "center",
+      inline: "center",
     });
   }
+  useEffect(() => {
+    handleMonthChange(currentMonth);
+  }, []);
 
   return (
-    <div className="w-full h-full max-w-xs">
-      <div className="w-full flex justify-between gap-2">
+    <div className="w-full min-h-[400px] max-w-xs overflow-hidden relative md:h-full">
+      <div className="w-full flex justify-between gap-2 px-1">
         <Select
           id={"monthDropDown"}
           options={MONTHS}
@@ -45,12 +41,12 @@ const Calendar = ({ data, addForm }) => {
         />
         <Button onClick={addForm}>Add Event</Button>
       </div>
-      {/* Your calendar rendering logic goes here */}
+
       {/* Display months vertically in desktop devices and horizontally in mobiles */}
-      <ul className="mt-2 w-full h-full flex gap-2 md:flex-col overflow-x-auto md:last:mb-4 md:pb-4">
-        {data?.map((obj, i) => (
-          <Month key={i} {...obj} />
-        ))}
+      <ul className="mt-2 w-full flex gap-2 md:flex-col overflow-auto md:h-full">
+        {data?.map((obj, i) => {
+          return <Month {...obj} key={i} ref={refs[MONTHS[obj.month - 1]]} />;
+        })}
       </ul>
     </div>
   );

@@ -5,14 +5,15 @@ import Input from "./Input";
 import Textarea from "./Textarea";
 import Button from "./Button";
 
-const EventForm = ({ close, add }) => {
+const EventForm = ({ close, add, event }) => {
   const { currentDate } = useContext(CalendarContext);
   const [title, setTitle] = useState("");
   const [startTime, setStartTime] = useState("09:00");
   const [endTime, setEndTime] = useState("17:00");
   const [description, setDescription] = useState("");
 
-  const handleAddEvent = () => {
+  const handleAddEvent = (e) => {
+    e.preventDefault();
     // Validate input fields as needed
     // For simplicity, we'll assume all fields are required
     if (title && startTime && endTime && description) {
@@ -55,7 +56,6 @@ const EventForm = ({ close, add }) => {
           required
         />
 
-        {/*Schedule  */}
         <div className="w-full flex gap-4">
           <Input
             id={"startTime"}

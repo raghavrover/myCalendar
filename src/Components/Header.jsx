@@ -1,9 +1,7 @@
 const Header = () => (
-  <header className="bg-blue-500 h-[80px] flex items-center">
+  <header className="bg-blue-500 h-[80px] flex items-center ">
     <div className="w-[92%] max-w-[1440px] mx-auto">
-      <a href="/" className="text-white text-2xl md:text-3xl font-bold">
-        My Calendar
-      </a>
+      <p className="text-white text-2xl md:text-3xl font-bold">My Calendar</p>
     </div>
   </header>
 );

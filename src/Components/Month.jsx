@@ -1,22 +1,7 @@
 import { startOfMonth, endOfMonth } from "date-fns";
-import { useContext, useRef } from "react";
+import { forwardRef, useContext, useRef } from "react";
 import CalendarContext from "../Context/CalendarContext";
-
-const weekDaysList = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-const monthsList = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
+import { weekDaysList, MONTHS } from "../Constants";
 
 function getDatesArray(start, end) {
   const array = [];
@@ -27,9 +12,8 @@ function getDatesArray(start, end) {
   return array;
 }
 
-function Month({ month, year }) {
+const Month = forwardRef(function RefMonth({ month, year }, ref) {
   const { currentDate, setCurrentDate } = useContext(CalendarContext);
-  const monthRef = useRef(null);
   const currentDay = currentDate.getDate(),
     currentMonth = currentDate.getMonth() + 1,
     currentYear = currentDate.getFullYear();
@@ -38,7 +22,7 @@ function Month({ month, year }) {
 
   // Creating a date, just to get start and end of the days of the current month
   const currentMonthDate = new Date(year, month - 1);
-  // Get the start and end of the current month
+  // Get start and end of the current month
   const startOfCurrentMonth = startOfMonth(currentMonthDate);
   const endOfCurrentMonth = endOfMonth(currentMonthDate);
   const datesArray = getDatesArray(
@@ -58,9 +42,9 @@ function Month({ month, year }) {
   }
 
   return (
-    <li className="w-full min-w-[300px] my-2" ref={monthRef}>
+    <li className="w-full min-w-[300px] my-2" ref={ref}>
       <div className="w-full flex justify-between items-center">
-        <p className="text-sm">{monthsList[month - 1]}</p>
+        <p className="text-sm">{MONTHS[month - 1]}</p>
         <span className="text-xs">{year}</span>
       </div>
 
@@ -88,9 +72,9 @@ function Month({ month, year }) {
                   <div
                     className={`${
                       areMonthAndYearSame && currentDay === day
-                        ? "bg-teal-800 text-white"
+                        ? "bg-slate-800 text-white"
                         : ""
-                    }  text-xs text-center w-[60%] aspect-square flex items-center justify-center rounded-full text-slate-700 cursor-pointer duration-200 hover:bg-teal-600 hover:text-white`}
+                    }  text-xs text-center w-[60%] aspect-square flex items-center justify-center rounded-full text-slate-700 cursor-pointer duration-200 hover:bg-slate-600 hover:text-white`}
                     onClick={() => handleClick(day)}
                   >
                     {day}
@@ -111,6 +95,6 @@ function Month({ month, year }) {
       </ul>
     </li>
   );
-}
+});
 
 export default Month;
